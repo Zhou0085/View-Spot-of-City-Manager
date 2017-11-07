@@ -14,6 +14,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 using GaodeSpotViewHelp;
+using GaodeHotelHelp;
+using GaodeRestaurantHelp;
 
 namespace View_Spot_of_City_Manager
 {
@@ -25,7 +27,7 @@ namespace View_Spot_of_City_Manager
         public MainWindow()
         {
             InitializeComponent();
-            GaodeSpotViewMaster.GenerateCsvFile("shanghai", "dc453323b38b08871eca3126a51e2d58", "d:\\ViewSpotData_shanghai.csv");
+            GaodeHotelMaster.GenerateCsvFile("shenzhen", "20bbffbabe3034722d1f379ce1436f30", "d:\\HotelData_shenzhen.csv");
         }
     }
 }

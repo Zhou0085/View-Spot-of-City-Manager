@@ -7,13 +7,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace GaodeSpotViewHelp
+namespace GaodeRestaurantHelp
 {
-    public static class GaodeSpotViewMaster
+    public static class GaodeRestaurantMaster
     {
+        static void Main(string[] args)
+        {
+        }
+
         public class photo
         {
-            public  photo()
+            public photo()
             {
                 Title = "-1";
                 Url = "-1";
@@ -29,6 +33,7 @@ namespace GaodeSpotViewHelp
                 set;
             }
         }
+
         public class poi
         {
             public poi()
@@ -46,7 +51,6 @@ namespace GaodeSpotViewHelp
                 Cost = "-1";
                 Telephone = "-1";
             }
-
             public string Id
             {
                 get;
@@ -110,18 +114,18 @@ namespace GaodeSpotViewHelp
         }
 
         /// <summary>
-        /// 生成景点csv文件
+        /// 生成饭店csv文件
         /// </summary>
         /// <param name="city">城市拼音</param>
         /// <param name="key">高德AK</param>
         /// <param name="filePath">文件保存路径</param>
-        public static void GenerateCsvFile(string city,string key,string filePath)
+        public static void GenerateCsvFile(string city, string key, string filePath)
         {
             CreatCSV(filePath);
             int count, page, left;
             string Count_string = "0";
             String xml_firstdata = "0";
-            string pre_web = "http://restapi.amap.com/v3/place/text?keywords=%E6%99%AF%E7%82%B9&city=";
+            string pre_web = "http://restapi.amap.com/v3/place/text?keywords=%E9%A4%90%E5%8E%85&city=";
             string mid_web1 = "&output=xml&offset=20&page=";
             string mid_web2 = "&key=";
             string post_web = "&extensions=all";
@@ -134,7 +138,7 @@ namespace GaodeSpotViewHelp
             String[] xmldata = new string[page + 1];
             for (int i = 1; i < page + 2; i++)
             {
-                web = pre_web + city + mid_web1 + i + mid_web2  + key + post_web;
+                web = pre_web + city + mid_web1 + i + mid_web2 + key + post_web;
                 xmldata[i - 1] = GetResponseWithhttpGet(web);
             }
             List<poi> PoiData = new List<poi>();
@@ -149,6 +153,20 @@ namespace GaodeSpotViewHelp
         }
 
         /// <summary>
+        /// 新建一个CSV文件
+        /// </summary>
+        /// <param name="filePath">CSV文件路径</param>
+        static void CreatCSV(string filePath)
+        {
+            string str = "id,name,type,address,lng,lat,pname,cityname,adminname,biz_ext_rating,biz_ext_cost,telephone,photourl1,photourl2,photourl3";
+            FileStream fs = new FileStream(filePath, FileMode.Create);
+            StreamWriter sw = new StreamWriter(fs, Encoding.UTF8);
+            sw.WriteLine(str);
+            sw.Close();
+            fs.Close();
+        }
+
+        /// <summary>
         /// 返回网址中获得XML文件
         /// </summary>
         /// <param name="urlString"></param>
@@ -157,7 +175,7 @@ namespace GaodeSpotViewHelp
         {
             var client = new RestClient(urlString);
             var request = new RestRequest(Method.GET);
-            request.AddHeader("postman-token", "ec2f8a13-4be9-713e-9d11-4ba67316086d");
+            request.AddHeader("postman-token", "aacecd5d-90bb-86c3-13e4-fd5e18310eb6");
             request.AddHeader("cache-control", "no-cache");
             IRestResponse response = client.Execute(request);
             string content = response.Content;
@@ -182,7 +200,7 @@ namespace GaodeSpotViewHelp
         /// 从XML文件中得到相关属性值
         /// </summary>
         /// <param name="Xmldata">XML数据</param>
-        /// <param name="PoiData">景点数据</param>
+        /// <param name="PoiData">餐厅数据</param>
         /// <param name="PhotoData">照片数据</param>
         static void ReadXmlNodes(string Xmldata, List<poi> PoiData, List<photo> PhotoData)
         {
@@ -215,6 +233,7 @@ namespace GaodeSpotViewHelp
                         PoiData[i].Name = xn2.SelectSingleNode("name").InnerText;
                         PoiData[i].Type = (xn2.SelectSingleNode("type")).InnerText;
                         PoiData[i].Address = (xn2.SelectSingleNode("address")).InnerText;
+                        PoiData[i].Address = PoiData[i].Address.Replace(",", "  ");
                         string poiLoc = (xn2.SelectSingleNode("location")).InnerText;
                         PoiData[i].Lng = poiLoc.Split(',')[0];
                         PoiData[i].Lat = poiLoc.Split(',')[1];
@@ -279,20 +298,6 @@ namespace GaodeSpotViewHelp
         }
 
         /// <summary>
-        /// 新建一个CSV文件
-        /// </summary>
-        /// <param name="filePath">CSV文件路径</param>
-        static void CreatCSV(string filePath)
-        {
-            string str = "id,name,type,address,lng,lat,pname,cityname,adminname,biz_ext_rating,biz_ext_cost,telephone,photourl1,photourl2,photourl3";
-            FileStream fs = new FileStream(filePath, FileMode.Create);
-            StreamWriter sw = new StreamWriter(fs,Encoding.UTF8);
-            sw.WriteLine(str);
-            sw.Close();
-            fs.Close();
-        }
-
-        /// <summary>
         /// 将数据保存进CSV文件中
         /// </summary>
         /// <param name="filePath">CSV文件路径</param>
@@ -313,11 +318,12 @@ namespace GaodeSpotViewHelp
             fs.Close();
         }
 
+
         /// <summary>
         /// 将最后一页的数据保存入CSV文件
         /// </summary>
         /// <param name="filePath">CSV文件路径</param>
-        /// <param name="PoiData">景点数据</param>
+        /// <param name="PoiData">餐厅数据</param>
         /// <param name="PhotoData">照片数据</param>
         /// <param name="left">余下数据的个数</param>
         static void SaveLastCSV(string filePath, List<poi> PoiData, List<photo> PhotoData, int left)

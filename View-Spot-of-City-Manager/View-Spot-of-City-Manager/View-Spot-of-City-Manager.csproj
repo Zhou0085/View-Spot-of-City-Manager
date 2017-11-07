@@ -99,6 +99,14 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GaodeHotelHelp\GaodeHotelHelp.csproj">
+      <Project>{0264da69-fb82-4257-a37c-3ddcad0efa66}</Project>
+      <Name>GaodeHotelHelp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GaodeRestaurantHelp\GaodeRestaurantHelp.csproj">
+      <Project>{ca1dbdc9-5f73-422d-a5de-7712c81ff905}</Project>
+      <Name>GaodeRestaurantHelp</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GaodeSpotViewHelp\GaodeSpotViewHelp.csproj">
       <Project>{623779a3-e809-461a-af0f-337a8dbf3336}</Project>
       <Name>GaodeSpotViewHelp</Name>
